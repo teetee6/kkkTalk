@@ -4,6 +4,8 @@ import { NextApiResponseServerIO } from '@/types/chat';
 import { NextApiRequest } from 'next';
 import { getServerSession } from 'next-auth';
 import { ObjectId } from 'mongodb';
+import fs from 'fs';
+import path from 'path';
 
 /**
  _id: number; //chats
@@ -70,6 +72,11 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
       res.socket.server.io
         .to(`${req.query.index}`)
         .emit('removeRoom', req.query.index);
+
+      // 채팅방 이미지 삭제
+      const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
+      const roomFolderPath = path.join(uploadsPath, req.query.index as string);
+      fs.rmdirSync(roomFolderPath, { recursive: true });
 
       res.status(200).json({ message: 'OK' });
     } catch (error) {
