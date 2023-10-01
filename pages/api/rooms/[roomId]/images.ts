@@ -32,7 +32,8 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
       return;
     }
 
-    const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
+    // const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
+    const uploadsPath = path.join(process.cwd(), 'uploads');
     if (!fs.existsSync(uploadsPath)) {
       fs.mkdirSync(uploadsPath);
     }
@@ -79,7 +80,8 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
 
     const completePath = roomFolderPath + '/' + new_filename;
     const relativePath = path.relative(
-      '/Users/teetee6/code_react/kkk_talk/public',
+      // '/Users/teetee6/code_react/kkk_talk/public',
+      '/Users/teetee6/code_react/kkk_talk',
       completePath
     );
 

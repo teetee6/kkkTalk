@@ -74,7 +74,7 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
         .emit('removeRoom', req.query.index);
 
       // 채팅방 이미지 삭제
-      const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
+      const uploadsPath = path.join(process.cwd(), 'uploads');
       const roomFolderPath = path.join(uploadsPath, req.query.index as string);
       fs.rmdirSync(roomFolderPath, { recursive: true });
 
