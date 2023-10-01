@@ -2,15 +2,13 @@ import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 
 import classes from './mainNavigation.module.css';
-import { useRouter } from 'next/router';
-import { disconnectFromDatabase } from '@/lib/db';
 
 function MainNavigation() {
   const { data, status } = useSession();
   // const router = useRouter();
 
   function logoutHandler() {
-    signOut();
+    signOut({ callbackUrl: '/' });
   }
 
   // const handleClick = (e: any) => {
@@ -35,6 +33,7 @@ function MainNavigation() {
               <Link href="/chat/-1">Chat</Link>
             </li>
           )}
+          <div onClick={() => {}}>Profile</div>
           {data && status === 'authenticated' && (
             <li>
               <button onClick={logoutHandler}>Logout</button>

@@ -7,9 +7,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
 import Link from 'next/link';
 import { Modal } from '../modal/modal';
+import { useSession } from 'next-auth/react';
 
 function ChatMainContainer() {
   const router = useRouter();
+  const session = useSession();
   const [showCreateRoomModal, setShowDeleteRoomModal] = useState(false);
   const [chat_socket, disconnect_chat_socket] = useSocket(
     '/api/socket/socketio'
@@ -32,15 +34,19 @@ function ChatMainContainer() {
   return (
     <div className={classes.body}>
       <div className={classes.middleSide}>
-        {router.query.slug && router.query.slug[0] !== '-1' && (
-          <ChatListContainer socket={chat_socket} />
-        )}
+        {session?.data?.user?.email &&
+          router.query.slug &&
+          router.query.slug[0] !== '-1' && (
+            <ChatListContainer socket={chat_socket} />
+          )}
       </div>
       <div className={classes.rightSide}>
-        <ChatRoom
-          socket={chat_socket}
-          setShowDeleteRoomModal={setShowDeleteRoomModal}
-        />
+        {session?.data?.user?.email && (
+          <ChatRoom
+            socket={chat_socket}
+            setShowDeleteRoomModal={setShowDeleteRoomModal}
+          />
+        )}
       </div>
       <Modal show={showCreateRoomModal} onCloseModal={onCloseCreateRoomModal}>
         <div className="deleteRoomModalContainer">

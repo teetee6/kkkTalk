@@ -189,9 +189,9 @@ function ChatRoom({
 
   // if (isLoadingRooms) return <div> isLoading...</div>;
 
-  if (!roomDatas || !session) return <div> isLoading... </div>;
-
   if (isLoadingPaginatedRoomlist) return <div> isLoading...</div>;
+
+  if (!roomDatas || !session) return <div> isLoading... </div>;
 
   return (
     <div className={classes.roomContainer}>
