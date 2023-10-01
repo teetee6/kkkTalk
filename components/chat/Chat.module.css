@@ -1,0 +1,45 @@
+.chatItem {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row-reverse;
+  position: relative;
+  gap: 0.3rem;
+  margin: 0.5rem 0;
+}
+.chatItem.otherUser {
+  flex-direction: row;
+}
+
+.chatProfile {
+  display: flex;
+
+  /*이미지 관련코드*/
+}
+
+.chatMain {
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
+}
+.chatMain > span {
+  text-align: right;
+}
+.chatMain.otherUser > span {
+  text-align: left;
+}
+
+.chatBubble {
+  white-space: pre-wrap;
+  position: relative;
+  border-radius: 1rem 0 1rem 1rem;
+  background-color: yellow;
+  color: #555;
+  border: 0.15rem solid black;
+  padding: 0.4rem;
+}
+
+.chatBubble.otherUser {
+  border-radius: 0 1rem 1rem 1rem;
+  background-color: whitesmoke;
+  color: #000;
+}

@@ -1,0 +1,98 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  /* background: #ffffff4d; */
+  height: 94vh;
+}
+
+.chatList {
+  flex: 8;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  /* align-items: center; */
+  gap: 1rem;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+.sendChat {
+  flex: 1;
+  width: 100%;
+}
+.sendChat > textarea {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none;
+  overflow: auto;
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.buttonContainer2 {
+  display: flex;
+}
+
+.sendChatButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: 20%;
+  gap: 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.sendChat > div:hover {
+  background-color: #0056b3;
+}
+
+.deleteRoomButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: red;
+  width: 20%;
+  margin: 0 auto;
+  /* flex: 1; */
+  color: #fff; /* 텍스트 색상 설정 */
+  border: none; /* 테두리 제거 */
+  border-radius: 4px; /* 둥근 모서리 설정 */
+  padding: 10px 20px; /* 내부 여백 설정 */
+  cursor: pointer; /* 커서 스타일 변경 */
+  transition: background-color 0.3s ease;
+}
+
+.goBackButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: orange;
+  width: 20%;
+  margin: 0 auto;
+  /* flex: 1; */
+  color: #fff; /* 텍스트 색상 설정 */
+  border: none; /* 테두리 제거 */
+  border-radius: 4px; /* 둥근 모서리 설정 */
+  padding: 10px 20px; /* 내부 여백 설정 */
+  cursor: pointer; /* 커서 스타일 변경 */
+  transition: background-color 0.3s ease;
+}

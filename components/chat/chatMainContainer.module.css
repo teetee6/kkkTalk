@@ -1,0 +1,23 @@
+.body {
+  display: flex;
+  justify-content: space-between;
+}
+
+.middleSide {
+  flex: 7;
+}
+
+.rightSide {
+  flex: 3;
+}
+
+.deleteRoomModalContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.deleteRoomModal {
+  font-size: 2rem; /* 원하는 폰트 크기 설정 */
+  display: inline-block; /* 수평 가운데 정렬을 위해 추가 */
+}
