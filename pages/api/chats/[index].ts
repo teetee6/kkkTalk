@@ -56,7 +56,6 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
       console.error('Error fetching chat messages:', error);
       res.status(500).json({ message: 'Failed to fetch chat messages' });
     } finally {
-      // client.close();
     }
   }
 }

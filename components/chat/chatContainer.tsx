@@ -48,6 +48,7 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
   const [chat, setChat] = useState('');
   const scrollbarRef = useRef<Scrollbars>(null);
   const session = useSession();
+  const [dragOver, setDragOver] = useState(false);
 
   const {
     data: chatDatas,
@@ -97,17 +98,13 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
     },
   });
 
-  // const scrollToBottom = () => {
-  //   scroll.scrollToBottom();
-  // };
-
   const onSubmitChat = useCallback(
     (e: React.FormEvent<HTMLDivElement>) => {
       e.preventDefault();
       if (!chat?.trim()) return;
       mutateChat({ chat });
       setChat('');
-      // scrollToBottom();
+      scrollbarRef.current?.scrollToBottom();
     },
     [chat, mutateChat]
   );
@@ -204,21 +201,81 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
     }, 50);
   }, []);
 
-  if (isLoadingChats) {
-    return <div>Loading...</div>;
-  }
-  if (!chatDatas) {
-    return <div>Loading...</div>;
-  }
+  /** 파일관련 */
+  const onChangeFile = useCallback(
+    (e: any) => {
+      const formData = new FormData();
+      if (e.target.files) {
+        for (let i = 0; i < e.target.files.length; i++) {
+          const file = e.target.files[i];
+          console.log(e, '.... file[' + i + '].name = ' + file.name);
+          formData.append('image', file);
+        }
+      }
+      fetch(`/api/rooms/${roomId}/images`, {
+        method: 'POST',
+        body: formData,
+      }).then((res) => {
+        if (res.ok) {
+          refetchChatList();
+        }
+      });
+    },
+    [refetchChatList, roomId]
+  );
 
-  // console.log(chatDatas);
+  const onDrop = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      console.log(e);
+      const formData = new FormData();
+      if (e.dataTransfer.items) {
+        // Use DataTransferItemList interface to access the file(s)
+        for (let i = 0; i < e.dataTransfer.items.length; i++) {
+          // If dropped items aren't files, reject them
+          if (e.dataTransfer.items[i].kind === 'file') {
+            const file = e.dataTransfer.items[i].getAsFile();
+            console.log(e, '.... file[' + i + '].name = ' + file.name);
+            formData.append('image', file);
+          }
+        }
+      } else {
+        // Use DataTransfer interface to access the file(s)
+        for (let i = 0; i < e.dataTransfer.files.length; i++) {
+          console.log(
+            e,
+            '... file[' + i + '].name = ' + e.dataTransfer.files[i].name
+          );
+          formData.append('image', e.dataTransfer.files[i]);
+        }
+      }
+      fetch(`/api/rooms/${roomId}/images`, {
+        method: 'POST',
+        body: formData,
+      }).then((res) => {
+        if (res.ok) {
+          setDragOver(false);
+          refetchChatList();
+        }
+      });
+    },
+    [refetchChatList, roomId]
+  );
+
+  const onDragOver = useCallback((e: any) => {
+    e.preventDefault();
+    console.log(e);
+    setDragOver(true);
+  }, []);
+  /** 파일관련 끝 */
+
   if (!session) return <div>로그인이 필요합니다.</div>;
 
   if (!roomDatas || !chatDatas) return <div>로딩중...</div>;
   if (isLoadingRoom || isLoadingChats) return <div>로딩중...</div>;
 
   return (
-    <div className={classes.container}>
+    <div className={classes.container} onDrop={onDrop} onDragOver={onDragOver}>
       <div className={classes.chatList}>
         <Scrollbars autoHide ref={scrollbarRef}>
           <ChatList chatDatas={chatDatas} />
@@ -253,6 +310,8 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
           </div>
         </div>
       </div>
+      {/* <input type="file" multiple onChange={onChangeFile} /> */}
+      {dragOver && <div className={classes.dragOver}>업로드!</div>}
     </div>
   );
 }

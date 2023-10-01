@@ -42,13 +42,25 @@ function Chat({
       >
         <span>{chatData.SenderId}</span>
         <span>{chatData.hms}</span>
-        <div
-          className={`${classes.chatBubble} ${
-            chatData.SenderId !== session?.user?.email ? classes.otherUser : ''
-          }`}
-        >
-          {chatData.content}
-        </div>
+        {chatData.content.startsWith('uploads\\') ||
+        chatData.content.startsWith('uploads/') ? (
+          <Image
+            alt="chatImage"
+            src={`${process.env.NEXT_PUBLIC_API_URL}/${chatData.content}`}
+            width={200}
+            height={200}
+          />
+        ) : (
+          <div
+            className={`${classes.chatBubble} ${
+              chatData.SenderId !== session?.user?.email
+                ? classes.otherUser
+                : ''
+            }`}
+          >
+            {chatData.content}
+          </div>
+        )}
       </div>
     </div>
   );
