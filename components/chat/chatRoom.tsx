@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Socket } from 'socket.io-client';
 
-// type
 export interface roomDataType {
   _id: string;
   title: string;
@@ -29,7 +28,7 @@ async function postCreateRoom(title: string): Promise<string> {
   });
 }
 
-const pageSize = 7; // 페이지 크기
+const pageSize = 7;
 const fetchPaginatedData = async (page: number, pageSize: number) => {
   const response = await fetch(`/api/rooms?page=${page}&pageSize=${pageSize}`);
   const data = await response.json();
@@ -50,9 +49,6 @@ function ChatRoom({
   const queryClient = useQueryClient();
 
   const [currentPage, setCurrentPage] = useState(1);
-  // const { data: roomDatas, isLoading: isLoadingRooms } = useQuery<
-  //   roomDataType[]
-  // >(['roomlist'], () => fetch(`/api/rooms/`).then((res) => res.json()));
 
   const {
     data: roomDatas,
@@ -151,7 +147,6 @@ function ChatRoom({
     }) => {
       if (!roomDatas) return;
       queryClient.setQueryData(['roomlist'], () => {
-        console.log(`newRoom: ${data}`);
         return [...roomDatas, data];
       });
       queryClient.invalidateQueries(['roomlist']);
@@ -185,8 +180,6 @@ function ChatRoom({
       socket?.off('removeRoom', onRemoveRoom);
     };
   }, [onNewRoom, onRemoveRoom, socket]);
-
-  // if (isLoadingRooms) return <div> isLoading...</div>;
 
   if (isLoadingPaginatedRoomlist) return <div> isLoading...</div>;
 
@@ -236,11 +229,7 @@ function ChatRoom({
           이전
         </button>
         <span>{currentPage}</span>
-        <button
-          type="button"
-          // disabled={currentPage * pageSize < totalRoomsCount}
-          onClick={goToNextPage}
-        >
+        <button type="button" onClick={goToNextPage}>
           다음
         </button>
       </div>

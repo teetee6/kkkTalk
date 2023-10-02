@@ -1,11 +1,5 @@
 import { MongoClient } from 'mongodb';
 
-const mongodb_info = {
-  id: 'teetee6',
-  password: 'BFQecQFLw09si1GZ',
-  dbName: 'auth-dev',
-};
-
 let cachedClient: MongoClient | null = null;
 
 export async function connectToDatabase(): Promise<MongoClient> {
