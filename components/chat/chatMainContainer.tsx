@@ -12,20 +12,18 @@ import { useSession } from 'next-auth/react';
 function ChatMainContainer() {
   const router = useRouter();
   const session = useSession();
-  const [showCreateRoomModal, setShowDeleteRoomModal] = useState(false);
+  const [showDeleteRoomModal, setShowDeleteRoomModal] = useState(false);
   const [chat_socket, disconnect_chat_socket] = useSocket(
     '/api/socket/socketio'
   );
 
   useEffect(() => {
-    console.log('호출되었습니다.');
     return () => {
-      console.log('컴포넌트가 사라집니다.');
       disconnect_chat_socket();
     };
   }, [disconnect_chat_socket]);
 
-  const onCloseCreateRoomModal = useCallback(() => {
+  const onCloseDeleteRoomModal = useCallback(() => {
     setShowDeleteRoomModal(
       (prevShowDeleteRoomModal) => !prevShowDeleteRoomModal
     );
@@ -48,7 +46,7 @@ function ChatMainContainer() {
           />
         )}
       </div>
-      <Modal show={showCreateRoomModal} onCloseModal={onCloseCreateRoomModal}>
+      <Modal show={showDeleteRoomModal} onCloseModal={onCloseDeleteRoomModal}>
         <div className="deleteRoomModalContainer">
           <div className="deleteRoomModal">방이 폭파되었습니다</div>
         </div>

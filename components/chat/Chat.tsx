@@ -23,7 +23,6 @@ function Chat({
     },
     []
   );
-  console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/${chatData.content}`);
 
   return (
     <div

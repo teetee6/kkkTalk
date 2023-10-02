@@ -7,12 +7,6 @@ import { ObjectId } from 'mongodb';
 import fs from 'fs';
 import path from 'path';
 
-/**
- _id: number; //chats
-  title: string;   // chats
-  owner: string;  //chats
- */
-
 async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
   const session = await getServerSession(req, res, authOptions);
 
@@ -54,7 +48,6 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
         return;
       }
 
-      console.log(chats[0]);
       // chats document 삭제
       await chatsCollection.deleteOne({
         _id: new ObjectId(req.query.index as string),
@@ -76,7 +69,10 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
       // 채팅방 이미지 삭제
       const uploadsPath = path.join(process.cwd(), 'uploads');
       const roomFolderPath = path.join(uploadsPath, req.query.index as string);
-      fs.rmdirSync(roomFolderPath, { recursive: true });
+      // 이미지 폴더가 존재하는지 확인
+      if (fs.existsSync(roomFolderPath)) {
+        fs.rmdirSync(roomFolderPath, { recursive: true });
+      }
 
       res.status(200).json({ message: 'OK' });
     } catch (error) {

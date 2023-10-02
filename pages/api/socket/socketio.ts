@@ -34,44 +34,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
 
       socket.on('joinRoom', async (roomId, email) => {
         socket.join(roomId);
-
-        // 방에 기존에 입장한 사람인지 확인
-        const rooms_result = client
-          .db()
-          .collection('rooms')
-          .find({
-            chatId: new ObjectId(roomId),
-          });
-        const roomInfo = await rooms_result.toArray();
-
-        if (roomInfo[0].memberList.some((member: string) => member === email))
-          return;
-
-        // // 방에 처음 입장한 사람인 경우
-        // const now_time = new Date().toISOString();
-
-        // const chatsCollection = client.db().collection(`chats-${roomId}`);
-        // const chats_result = await chatsCollection.insertOne({
-        //   createdAt: now_time,
-        //   SenderId: '[system]',
-        //   content: `${email}님이 입장하셨습니다.`,
-        // });
-
-        // io.to(roomId).emit('join', {
-        //   _id: chats_result.insertedId,
-        //   createdAt: now_time,
-        //   SenderId: '[system]',
-        //   content: `${email}님이 입장하셨습니다.`,
-        // });
       });
 
       socket.on('message', (roomId, message) => {
         io.to(roomId).emit('message', message);
       });
 
-      socket.on('disconnect', () => {
-        console.log('A client disconnected.');
-      });
+      socket.on('disconnect', () => {});
     });
 
     res.socket.server.io = io;

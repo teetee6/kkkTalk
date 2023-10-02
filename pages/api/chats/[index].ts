@@ -40,7 +40,6 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
       console.error('Error saving chat message:', error);
       res.status(500).json({ message: 'Failed to save chat message' });
     } finally {
-      // client.close();
     }
   }
 

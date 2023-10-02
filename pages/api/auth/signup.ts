@@ -32,7 +32,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (existingUser) {
     res.status(422).json({ message: 'User exists already!' });
-    // client.close();
     return;
   }
 
@@ -44,7 +43,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   });
 
   res.status(201).json({ message: 'Created user!' });
-  // client.close();
 }
 
 export default handler;

@@ -16,7 +16,7 @@ export async function connectToDatabase(): Promise<MongoClient> {
   const client = new MongoClient(
     `mongodb+srv://${process.env.MONGODB_ID}:${process.env.MONGODB_PASSWORD}@atlascluster.whlisy6.mongodb.net/${process.env.MONGODB_DBNAME}?retryWrites=true&w=majority`,
     {
-      maxPoolSize: 10, // 연결 풀의 크기를 조절합니다. 필요에 따라 조절하세요.
+      maxPoolSize: 10,
     }
   );
 

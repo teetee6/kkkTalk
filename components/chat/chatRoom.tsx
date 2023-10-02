@@ -133,7 +133,6 @@ function ChatRoom({
           senderId,
         }),
       }).then((res) => {
-        console.log(res.status);
         if (res.status === 200 || 201) {
           socket?.emit('joinRoom', roomId, session?.data?.user?.email);
           router.replace(`/chat/${roomId}`);

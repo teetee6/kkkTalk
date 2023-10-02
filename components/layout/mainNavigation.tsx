@@ -2,19 +2,18 @@ import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 
 import classes from './mainNavigation.module.css';
+import { useState } from 'react';
+import Profile from '../profile/profile';
+import SignUpSuccessModal from '../modal/SignUpSucessModal';
 
 function MainNavigation() {
   const { data, status } = useSession();
-  // const router = useRouter();
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  // const [showSignUpSucessModal, setShowSignUpSucessModal] = useState(false);
 
   function logoutHandler() {
     signOut({ callbackUrl: '/' });
   }
-
-  // const handleClick = (e: any) => {
-  //   e.preventDefault();
-  //   router.replace('/chat');
-  // };
 
   return (
     <header className={classes.header}>
@@ -25,7 +24,7 @@ function MainNavigation() {
         <ul>
           {!data && status === 'unauthenticated' && (
             <li>
-              <Link href="/auth">Login</Link>
+              <Link href="/signIn">Login</Link>
             </li>
           )}
           {data && status === 'authenticated' && (
@@ -33,14 +32,42 @@ function MainNavigation() {
               <Link href="/chat/-1">Chat</Link>
             </li>
           )}
-          <div onClick={() => {}}>Profile</div>
+          {/* {data && status === 'authenticated' && (
+            <div
+              onClick={() => {
+                setShowProfileModal((prev) => !prev);
+              }}
+            >
+              Profile
+            </div>
+          )} */}
           {data && status === 'authenticated' && (
             <li>
               <button onClick={logoutHandler}>Logout</button>
             </li>
           )}
         </ul>
+        {data && status === 'authenticated' && (
+          <Profile
+            showProfileModal={showProfileModal}
+            setShowProfileModal={setShowProfileModal}
+          />
+        )}
       </nav>
+      {/** Main Modal */}
+      {/* {
+        <div
+          onClick={() => {
+            setShowSignUpSucessModal((prev) => !prev);
+          }}
+        >
+          dddd
+        </div>
+      }
+      <SignUpSuccessModal
+        showSignUpSuccessModal={showSignUpSucessModal}
+        setShowSignUpSuccessModal={setShowSignUpSucessModal}
+      /> */}
     </header>
   );
 }

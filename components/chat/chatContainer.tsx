@@ -133,7 +133,6 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
   const onJoin = useCallback(
     async (newChatData: chatDataType) => {
       queryClient.setQueryData(['chat', roomId], (chatData: any) => {
-        console.log('join: ', newChatData);
         return [...chatData, newChatData];
       });
       queryClient.invalidateQueries(['chat', roomId]);
@@ -144,7 +143,6 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
   const onMessage = useCallback(
     async (newChatData: chatDataType) => {
       queryClient.setQueryData(['chat', roomId], (chatData: any) => {
-        console.log('새로받은 메세지: ', newChatData);
         return [...chatData, newChatData];
       });
       queryClient.invalidateQueries(['chat', roomId]);
@@ -201,51 +199,19 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
     }, 50);
   }, []);
 
-  /** 파일관련 */
-  const onChangeFile = useCallback(
-    (e: any) => {
-      const formData = new FormData();
-      if (e.target.files) {
-        for (let i = 0; i < e.target.files.length; i++) {
-          const file = e.target.files[i];
-          console.log(e, '.... file[' + i + '].name = ' + file.name);
-          formData.append('image', file);
-        }
-      }
-      fetch(`/api/rooms/${roomId}/images`, {
-        method: 'POST',
-        body: formData,
-      }).then((res) => {
-        if (res.ok) {
-          refetchChatList();
-        }
-      });
-    },
-    [refetchChatList, roomId]
-  );
-
   const onDrop = useCallback(
     (e: any) => {
       e.preventDefault();
-      console.log(e);
       const formData = new FormData();
       if (e.dataTransfer.items) {
-        // Use DataTransferItemList interface to access the file(s)
         for (let i = 0; i < e.dataTransfer.items.length; i++) {
-          // If dropped items aren't files, reject them
           if (e.dataTransfer.items[i].kind === 'file') {
             const file = e.dataTransfer.items[i].getAsFile();
-            console.log(e, '.... file[' + i + '].name = ' + file.name);
             formData.append('image', file);
           }
         }
       } else {
-        // Use DataTransfer interface to access the file(s)
         for (let i = 0; i < e.dataTransfer.files.length; i++) {
-          console.log(
-            e,
-            '... file[' + i + '].name = ' + e.dataTransfer.files[i].name
-          );
           formData.append('image', e.dataTransfer.files[i]);
         }
       }
@@ -264,10 +230,8 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
 
   const onDragOver = useCallback((e: any) => {
     e.preventDefault();
-    console.log(e);
     setDragOver(true);
   }, []);
-  /** 파일관련 끝 */
 
   if (!session) return <div>로그인이 필요합니다.</div>;
 

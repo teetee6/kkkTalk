@@ -23,7 +23,6 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user) {
-          // client.close();
           throw new Error('No user found!');
         }
 
@@ -33,11 +32,9 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!isValid) {
-          // client.close();
           throw new Error('Could not log you in!');
         }
 
-        // client.close();
         return { email: user.email } as User;
       },
     }),

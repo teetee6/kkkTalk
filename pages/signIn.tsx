@@ -1,17 +1,16 @@
 import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import SignInForm from '@/components/auth/SignInForm';
 
-import AuthForm from '../components/auth/authForm';
-
-function AuthPage() {
+function SignInPage() {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     getSession().then((session) => {
       if (session) {
-        router.replace('/');
+        router.replace('/chat/-1');
       } else {
         setIsLoading(false);
       }
@@ -22,7 +21,7 @@ function AuthPage() {
     return <p>Loading...</p>;
   }
 
-  return <AuthForm />;
+  return <SignInForm />;
 }
 
-export default AuthPage;
+export default SignInPage;

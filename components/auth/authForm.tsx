@@ -55,10 +55,9 @@ function AuthForm() {
       }
     } else {
       try {
-        const result = await createUser(enteredEmail, enteredPassword);
-        console.log(result);
+        await createUser(enteredEmail, enteredPassword);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   }

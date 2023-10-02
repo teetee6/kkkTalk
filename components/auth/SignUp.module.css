@@ -1,0 +1,52 @@
+.signup_container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+}
+
+.input_container {
+  margin-bottom: 15px;
+}
+
+.input_container > label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.input_container > input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.error_message {
+  color: red;
+  margin-top: 5px;
+}
+
+.signup_button,
+.login_link {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.signup_button:disabled {
+  background-color: lightgray;
+  cursor: not-allowed;
+}
+
+.login_link {
+  background-color: #007bff;
+}
