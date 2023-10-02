@@ -191,7 +191,7 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
       socket?.off('message', onMessage);
       socket?.off('join', onJoin);
     };
-  }, []);
+  }, [onJoin, onMessage, socket]);
 
   useEffect(() => {
     setTimeout(() => {

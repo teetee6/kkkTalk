@@ -18,7 +18,7 @@ const useSocket = (key?: string): [Socket | undefined, () => void] => {
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}${key}`);
     }
     initServerSocket();
-  }, []);
+  }, [key]);
 
   useEffect(() => {
     const initSocket = async () => {
