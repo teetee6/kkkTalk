@@ -40,7 +40,11 @@ function SignUpForm() {
             closeOnClick: true,
           });
         } else {
-          console.error('Signup failed.');
+          response.json().then((data) => {
+            toast.error(data.message, {
+              closeOnClick: true,
+            });
+          });
         }
       } catch (error) {
         console.error('Error during signup:', error);

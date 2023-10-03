@@ -3,6 +3,8 @@ import useValidation from '../../hooks/useValidation';
 import { useRouter } from 'next/router';
 import classes from './SignIn.module.css';
 import { signIn } from 'next-auth/react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function SignInForm() {
   const [email, setEmail] = useState<string>('');
@@ -25,14 +27,18 @@ function SignInForm() {
     });
 
     if (!result!.error) {
-      // set some auth state
-
       router.replace('/chat/-1');
+    } else {
+      console.log(result!.error);
+      toast.error(result!.error, {
+        closeOnClick: true,
+      });
     }
   };
 
   return (
     <div className={classes.signin_container}>
+      <ToastContainer limit={1} />
       <h2>로그인</h2>
       <div className={classes.input_container}>
         <label>Email:</label>

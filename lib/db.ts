@@ -8,6 +8,7 @@ const development_addr = `mongodb+srv://${process.env.MONGODB_ID}:${process.env.
 const address =
   process.env.NODE_ENV === 'production' ? deployment_addr : development_addr;
 
+console.log(process.env.NODE_ENV);
 export async function connectToDatabase(): Promise<MongoClient> {
   if (cachedClient) {
     return cachedClient;
