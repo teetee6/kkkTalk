@@ -2,6 +2,9 @@
 
 - Next.js로 구현한 웹채팅 입니다.
 
+### 배포주소
+https://kkkkkktalk.com/
+
 ### 기술 스택
 
 <div>
