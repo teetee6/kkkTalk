@@ -46,7 +46,7 @@ function Chat({
         chatData.content.startsWith('uploads/') ? (
           <Image
             alt="chatImage"
-            src={`${process.env.NEXT_PUBLIC_API_URL}/api/${chatData.content}`}
+            src={`/api/${chatData.content}`}
             width={200}
             height={200}
           />

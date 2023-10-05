@@ -4,8 +4,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: 'localhost',
-        port: '3000',
+        hostname:
+          process.env.NODE_ENV === 'production'
+            ? 'kkkkkktalk.com'
+            : 'localhost',
       },
     ],
   },

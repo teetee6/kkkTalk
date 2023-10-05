@@ -15,7 +15,7 @@ const useSocket = (key?: string): [Socket | undefined, () => void] => {
 
   useEffect(() => {
     async function initServerSocket() {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}${key}`);
+      await fetch(`${key}`);
     }
     initServerSocket();
   }, [key]);
