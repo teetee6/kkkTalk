@@ -297,6 +297,48 @@ const onDrop = useCallback(
   </div>
 </details>
 
+### 6. 프로필 이미지 처리
+
+<details>
+  <summary>설명</summary>
+  <div>
+
+
+profileImage 소켓이벤트가 발생하면 다음과 같이 해당 방의 채팅 내역을 다시 불러와 이미지를 업데이트 시켜줍니다.
+    
+```jsx
+ const onProfileImage = useCallback(async () => {
+    queryClient.invalidateQueries(['chat', roomId]);
+  }, [queryClient, roomId]);
+```
+
+src='/api/chatProfile/teetee6@naver.com'<br>
+src='/api/chatProfile/teetee6@naver.com'<br>
+과 같은 형식으로 요청을 하였더니, 브라우저에서 캐싱을 한다고 하여, 요청이 한번밖에 가지 않는 이슈가 있었습니다. 따라서 여러번 요청이 가도록 뒤에 랜덤 쿼리파라미터를 넣어주었습니다.
+
+```jsx
+<Image
+          src={
+            chatData.SenderId === '[system]'
+              ? '/assets/system.png'
+              : `/api/chatProfile/${chatData.SenderId}?${Math.random()}`
+          }
+          alt="Profile Image"
+          width={30}
+          height={30}
+          loading="lazy"
+        />
+```
+
+또한 채팅목록이 여러개 있으면, 채팅입력 할때 렉이 걸리는 최적화 문제가 발생하였습니다. 따라서 다음과 같이 메모이제이션을 사용하였습니다.
+
+```jsx
+React.memo(ChatList)
+```
+
+  </div>
+</details>
+
 ## 💡 주요 기능(백엔드)
 
 ### 1. db 연결풀 생성
@@ -526,6 +568,17 @@ if (req.method === 'DELETE') {
   </div>
 </details>
 
+### 5. 프로필 이미지 처리
+
+<details>
+  <summary>설명</summary>
+  <div>
+회원가입시 기존 public폴더 안의 assets/user.png파일을 프로젝트폴더/uploads/[몽고 유저_id]/user.png 위치로 저장합니다. 그 후, 유저가 프로필 이미지를 제출하면 기존의 파일을 지운후, 프로젝트폴더/uploads/[몽고 유저 _id]/'현재시각_원본명' 위치로 저장합니다. <br>
+ 그 후, 해당 유저가 join되어있는 방에게 profileImage 이벤트 소켓통신으로 이미지가 갱신되었음을 알립니다.
+
+  </div>
+</details>
+
 # 💡 시현 영상
 
 
@@ -538,5 +591,10 @@ https://github.com/teetee6/kkkTalk/assets/17748068/e85dd707-ee0f-4c5a-983a-5131f
 - 최초방 입장 및 프리페칭 페이지네이션, 새로고침 소켓원활함<br>
 
 https://github.com/teetee6/kkkTalk/assets/17748068/a3aa1bce-e767-45df-b23a-c236101dc61b
+
+- 프로필 이미지 변경<br>
+
+
+https://github.com/teetee6/kkkTalk/assets/17748068/bf4a7ca3-83c5-4e73-a696-5b9f9f766e29
 
 
