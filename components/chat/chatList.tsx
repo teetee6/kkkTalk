@@ -9,6 +9,7 @@ export interface chatDataWithHmsType {
   createdAt: string;
   SenderId: string;
   hms: string;
+  profileImage: string;
 }
 
 const weekDays: { [key: string]: string } = {

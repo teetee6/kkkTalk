@@ -3,9 +3,7 @@ import ChatListContainer from './chatContainer';
 import ChatRoom from './chatRoom';
 import { useRouter } from 'next/router';
 import useSocket from '@/hooks/useSocket';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Socket, io } from 'socket.io-client';
-import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
 import { Modal } from '../modal/modal';
 import { useSession } from 'next-auth/react';
 
@@ -35,7 +33,10 @@ function ChatMainContainer() {
         {session?.data?.user?.email &&
           router.query.slug &&
           router.query.slug[0] !== '-1' && (
-            <ChatListContainer socket={chat_socket} />
+            <ChatListContainer
+              key={router.query.slug[0]}
+              socket={chat_socket}
+            />
           )}
       </div>
       <div className={classes.rightSide}>

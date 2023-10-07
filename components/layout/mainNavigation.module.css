@@ -9,14 +9,15 @@
   padding: 0 10%;
 }
 
-.logo {
+.logo > a {
   font-family: 'Lato', sans-serif;
   font-size: 2rem;
   color: white;
   margin: 0;
+  text-decoration: none;
 }
 
-.header ul {
+.header > nav > ul {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -24,17 +25,20 @@
   align-items: baseline;
 }
 
-.header li {
+.header > nav > ul > li {
   margin: 0 1rem;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-.header a {
+.header > nav > ul > li > a {
   text-decoration: none;
   color: white;
   font-weight: bold;
 }
 
-.header button {
+.header > nav > ul > li > button {
   font: inherit;
   background-color: transparent;
   border: 1px solid white;
@@ -45,11 +49,11 @@
   cursor: pointer;
 }
 
-.header a:hover {
+.header > nav > ul > li > a:hover {
   color: #c291e2;
 }
 
-.header button:hover {
+.header > nav > ul > li > button:hover {
   background-color: #c291e2;
   color: #38015c;
 }

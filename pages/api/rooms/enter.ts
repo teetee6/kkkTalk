@@ -53,6 +53,7 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
           createdAt: now_time,
           SenderId: '[system]',
           content: `${session.user!.email}님이 입장하셨습니다.`,
+          profileImage: '/assets/system.png',
         });
 
         res.socket.server.io.to(req.body.roomId).emit('join', {
@@ -60,6 +61,7 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
           createdAt: now_time,
           SenderId: '[system]',
           content: `${session.user!.email}님이 입장하셨습니다.`,
+          profileImage: '/assets/system.png',
         });
 
         res

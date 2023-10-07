@@ -1,0 +1,20 @@
+.profileModalContainer {
+}
+
+.profileImage {
+}
+
+.customFileUpload {
+  background-color: rgb(111, 116, 238);
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.customFileUpload:hover {
+  background-color: rgb(66, 78, 166);
+}
+
+.inputImage {
+  display: none;
+}

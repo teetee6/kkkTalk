@@ -4,12 +4,11 @@ import { useSession, signOut } from 'next-auth/react';
 import classes from './mainNavigation.module.css';
 import { useState } from 'react';
 import Profile from '../profile/profile';
-import SignUpSuccessModal from '../modal/SignUpSucessModal';
+import { useQuery } from 'react-query';
 
 function MainNavigation() {
   const { data, status } = useSession();
   const [showProfileModal, setShowProfileModal] = useState(false);
-  // const [showSignUpSucessModal, setShowSignUpSucessModal] = useState(false);
 
   function logoutHandler() {
     signOut({ callbackUrl: '/' });
@@ -17,9 +16,10 @@ function MainNavigation() {
 
   return (
     <header className={classes.header}>
-      <Link href="/">
-        <div className={classes.logo}>KKKTalk</div>
-      </Link>
+      <div className={classes.logo}>
+        <Link href="/">KKKTalk</Link>
+      </div>
+
       <nav>
         <ul>
           {!data && status === 'unauthenticated' && (
@@ -32,42 +32,28 @@ function MainNavigation() {
               <Link href="/chat/-1">Chat</Link>
             </li>
           )}
-          {/* {data && status === 'authenticated' && (
-            <div
+          {data && status === 'authenticated' && (
+            <li
               onClick={() => {
                 setShowProfileModal((prev) => !prev);
               }}
             >
               Profile
-            </div>
-          )} */}
+            </li>
+          )}
           {data && status === 'authenticated' && (
             <li>
               <button onClick={logoutHandler}>Logout</button>
             </li>
           )}
+          {data && status === 'authenticated' && (
+            <Profile
+              showProfileModal={showProfileModal}
+              setShowProfileModal={setShowProfileModal}
+            />
+          )}
         </ul>
-        {data && status === 'authenticated' && (
-          <Profile
-            showProfileModal={showProfileModal}
-            setShowProfileModal={setShowProfileModal}
-          />
-        )}
       </nav>
-      {/** Main Modal */}
-      {/* {
-        <div
-          onClick={() => {
-            setShowSignUpSucessModal((prev) => !prev);
-          }}
-        >
-          dddd
-        </div>
-      }
-      <SignUpSuccessModal
-        showSignUpSuccessModal={showSignUpSucessModal}
-        setShowSignUpSuccessModal={setShowSignUpSucessModal}
-      /> */}
     </header>
   );
 }

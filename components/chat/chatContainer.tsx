@@ -15,6 +15,7 @@ export interface chatDataType {
   createdAt: string;
   SenderId: string;
   content: string;
+  profileImage: string;
 }
 
 export interface roomDataType {
@@ -140,6 +141,10 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
     [queryClient, roomId]
   );
 
+  const onProfileImage = useCallback(async () => {
+    queryClient.invalidateQueries(['chat', roomId]);
+  }, [queryClient, roomId]);
+
   const onMessage = useCallback(
     async (newChatData: chatDataType) => {
       queryClient.setQueryData(['chat', roomId], (chatData: any) => {
@@ -187,11 +192,13 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
   useEffect(() => {
     socket?.on('message', onMessage);
     socket?.on('join', onJoin);
+    socket?.on('profileImage', onProfileImage);
     return () => {
       socket?.off('message', onMessage);
       socket?.off('join', onJoin);
+      socket?.off('profileImage', onProfileImage);
     };
-  }, [onJoin, onMessage, socket]);
+  }, [onJoin, onMessage, onProfileImage, socket]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -274,7 +281,6 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
           </div>
         </div>
       </div>
-      {/* <input type="file" multiple onChange={onChangeFile} /> */}
       {dragOver && <div className={classes.dragOver}>업로드!</div>}
     </div>
   );

@@ -4,6 +4,7 @@ import { chatDataWithHmsType } from './chatList';
 import classes from './Chat.module.css';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useQuery } from 'react-query';
 
 function Chat({
   index,
@@ -32,7 +33,16 @@ function Chat({
       key={index}
     >
       <div className={classes.chatProfile}>
-        {/* <Image src="" alt="Profile Image" width={30} height={30} /> */}
+        <Image
+          src={
+            chatData.SenderId === '[system]'
+              ? chatData.profileImage
+              : `/api/${chatData.profileImage}`
+          }
+          alt="Profile Image"
+          width={30}
+          height={30}
+        />
       </div>
       {/* <div> chatMenu</div> */}
       <div
