@@ -1,5 +1,5 @@
 import useValidation from '@/hooks/useValidation';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import classes from './SignUp.module.css';
 import { toast, ToastContainer } from 'react-toastify';
@@ -18,7 +18,7 @@ function SignUpForm() {
     handleValidation,
   ] = useValidation(setEmail, setPassword);
 
-  const handleSignUp = async () => {
+  const handleSignUp = useCallback(async () => {
     if (handleValidation()) {
       try {
         const response = await fetch('/api/auth/signup', {
@@ -50,7 +50,7 @@ function SignUpForm() {
         console.error('Error during signup:', error);
       }
     }
-  };
+  }, [handleValidation, email, password, router]);
 
   return (
     <div className={classes.signup_container}>

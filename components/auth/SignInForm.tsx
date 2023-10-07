@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import useValidation from '../../hooks/useValidation';
 import { useRouter } from 'next/router';
 import classes from './SignIn.module.css';
@@ -19,7 +19,7 @@ function SignInForm() {
     handleValidation,
   ] = useValidation(setEmail, setPassword);
 
-  const handleSignIn = async () => {
+  const handleSignIn = useCallback(async () => {
     const result = await signIn('credentials', {
       redirect: false,
       email: email,
@@ -34,7 +34,7 @@ function SignInForm() {
         closeOnClick: true,
       });
     }
-  };
+  }, [email, password, router]);
 
   return (
     <div className={classes.signin_container}>
