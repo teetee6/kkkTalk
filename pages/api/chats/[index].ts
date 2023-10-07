@@ -23,15 +23,10 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
       const chatsCollection = client
         .db()
         .collection(`chats-${req.query.index}`);
-      const profilesCollection = client.db().collection('profiles');
-      const profileResult = await profilesCollection.findOne({
-        userId: session.user!.email,
-      });
       const result = await chatsCollection.insertOne({
         createdAt: now_time,
         SenderId: session.user!.email,
         content: req.body.chat,
-        profileImage: profileResult?.image,
       });
 
       res.socket.server.io.to(`${req.query.index}`).emit('message', {
@@ -39,7 +34,6 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
         createdAt: now_time,
         SenderId: session.user!.email,
         content: req.body.chat,
-        profileImage: profileResult?.image,
       });
       res.status(200).json({ message: 'OK' });
     } catch (error) {

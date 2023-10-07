@@ -44,7 +44,6 @@ const Profile: React.FC<ProfileProps> = ({
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['profileImage']);
-        queryClient.invalidateQueries(['chat']);
       },
     }
   );

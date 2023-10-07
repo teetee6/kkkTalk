@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import classes from './chatContainer.module.css';
 import ChatList from './chatList';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Element, animateScroll as scroll } from 'react-scroll';
 import { Socket } from 'socket.io-client';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useSession } from 'next-auth/react';
@@ -15,7 +14,6 @@ export interface chatDataType {
   createdAt: string;
   SenderId: string;
   content: string;
-  profileImage: string;
 }
 
 export interface roomDataType {

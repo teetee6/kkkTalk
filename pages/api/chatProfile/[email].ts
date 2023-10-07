@@ -22,7 +22,6 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
   try {
     const imageFilePath = path.join(process.cwd(), profileResult?.image);
 
-    console.log(imageFilePath);
     const imageBuffer = fs.readFileSync(imageFilePath);
 
     res.setHeader('Content-Type', 'image/*');

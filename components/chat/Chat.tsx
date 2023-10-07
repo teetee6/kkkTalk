@@ -10,7 +10,7 @@ function Chat({
   index,
   chatData,
 }: {
-  index: number;
+  index: string;
   chatData: chatDataWithHmsType;
 }) {
   const { data: session } = useSession();
@@ -30,18 +30,20 @@ function Chat({
       className={`${classes.chatItem} ${
         chatData.SenderId !== session?.user?.email ? classes.otherUser : ''
       }`}
-      key={index}
+      key={`${index}`}
     >
       <div className={classes.chatProfile}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <Image
           src={
             chatData.SenderId === '[system]'
-              ? chatData.profileImage
-              : `/api/${chatData.profileImage}`
+              ? '/assets/system.png'
+              : `/api/chatProfile/${chatData.SenderId}?${Math.random()}`
           }
           alt="Profile Image"
           width={30}
           height={30}
+          loading="lazy"
         />
       </div>
       {/* <div> chatMenu</div> */}

@@ -3,13 +3,14 @@ import { chatDataType } from './chatContainer';
 import classes from './chatList.module.css';
 import Chat from './Chat';
 import { Socket } from 'socket.io-client';
+import React from 'react';
 
 export interface chatDataWithHmsType {
   content: string;
   createdAt: string;
   SenderId: string;
   hms: string;
-  profileImage: string;
+  _id: string;
 }
 
 const weekDays: { [key: string]: string } = {
@@ -49,8 +50,14 @@ function ChatList({ chatDatas }: { chatDatas: chatDataType[] }) {
             <div className={classes.YYYY_MM_DD}>
               {obj_key} {week}
             </div>
-            {obj[obj_key].map((chatData, index2) => {
-              return <Chat key={index2} index={index2} chatData={chatData} />;
+            {obj[obj_key].map((chatData) => {
+              return (
+                <Chat
+                  key={chatData._id}
+                  index={chatData._id}
+                  chatData={chatData}
+                />
+              );
             })}
           </div>
         );
@@ -59,4 +66,4 @@ function ChatList({ chatDatas }: { chatDatas: chatDataType[] }) {
   );
 }
 
-export default ChatList;
+export default React.memo(ChatList);
