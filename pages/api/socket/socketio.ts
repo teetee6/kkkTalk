@@ -1,11 +1,7 @@
 import { NextApiRequest } from 'next';
 import { NextApiResponseServerIO } from '@/types/chat';
 import { Server as ServerIO } from 'socket.io';
-import { Server as NetServer, createServer } from 'http';
-import { authOptions } from '../auth/[...nextauth]';
-import { getServerSession } from 'next-auth';
-import { connectToDatabase } from '@/lib/db';
-import { ObjectId } from 'mongodb';
+import { Server as NetServer } from 'http';
 
 export const config = {
   api: {
@@ -17,7 +13,6 @@ export const socketMap: { [key: string]: string } = {};
 
 const handler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
   if (!res.socket.server.io) {
-    const client = await connectToDatabase();
     console.log('New Socket.io server...✅');
 
     const httpServer: NetServer = res.socket.server as any;
@@ -30,7 +25,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
     });
 
     io.on('connection', (socket) => {
-      console.log('A client connected.');
+      socket.on('login', async (email) => {
+        socketMap[email] = socket.id;
+        console.log('socketMap', socketMap);
+      });
 
       socket.on('joinRoom', async (roomId, email) => {
         socket.join(roomId);
@@ -44,7 +42,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
         io.to(roomId).emit('message', message);
       });
 
-      socket.on('disconnect', () => {});
+      socket.on('disconnect', () => {
+        console.log('socketMap', socketMap);
+        delete socketMap[socket.id];
+      });
     });
 
     res.socket.server.io = io;

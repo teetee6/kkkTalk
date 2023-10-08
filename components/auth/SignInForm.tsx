@@ -5,11 +5,15 @@ import classes from './SignIn.module.css';
 import { signIn } from 'next-auth/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import useSocket from '@/hooks/useSocket';
 
 function SignInForm() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const router = useRouter();
+  const [chat_socket, disconnect_chat_socket] = useSocket(
+    '/api/socket/socketio'
+  );
 
   const [
     onChangeEmail,
@@ -27,6 +31,7 @@ function SignInForm() {
     });
 
     if (!result!.error) {
+      chat_socket?.emit('login', email);
       router.replace('/chat/-1');
     } else {
       console.log(result!.error);
@@ -34,7 +39,13 @@ function SignInForm() {
         closeOnClick: true,
       });
     }
-  }, [email, password, router]);
+  }, [email, password, router, chat_socket]);
+
+  useEffect(() => {
+    return () => {
+      disconnect_chat_socket();
+    };
+  }, [disconnect_chat_socket]);
 
   return (
     <div className={classes.signin_container}>

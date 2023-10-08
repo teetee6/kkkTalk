@@ -13,12 +13,12 @@ const useSocket = (key?: string): [Socket | undefined, () => void] => {
     }
   }, [socket, key]);
 
-  useEffect(() => {
-    async function initServerSocket() {
-      await fetch(`${key}`);
-    }
-    initServerSocket();
-  }, [key]);
+  // useEffect(() => {
+  //   async function initServerSocket() {
+  //     await fetch(`${key}`);
+  //   }
+  //   initServerSocket();
+  // }, [key]);
 
   useEffect(() => {
     const initSocket = async () => {

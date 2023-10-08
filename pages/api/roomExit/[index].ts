@@ -25,35 +25,21 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
       { $pull: { memberList: session?.user?.email as any } }
     );
 
-  // const roomResult = await client
-  //   .db()
-  //   .collection('rooms')
-  //   .findOne({ chatId: new ObjectId(roomId as string) });
+  const now_time = new Date().toISOString();
 
-  // // 방에 아무도 없으면 방 삭제
-  // if (roomResult && roomResult.memberList.length === 0) {
-  //   await client
-  //     .db()
-  //     .collection('rooms')
-  //     .deleteOne({ chatId: new ObjectId(roomId as string) });
+  const chatsCollection = client.db().collection(`chats-${roomId}`);
+  const chats_result = await chatsCollection.insertOne({
+    createdAt: now_time,
+    SenderId: '[system]',
+    content: `${session.user!.email}님이 퇴장하셨습니다.`,
+  });
 
-  //   await client.db().collection(`chats-${roomId}`).drop();
-
-  //   // 채팅방 이미지 삭제
-  //   const uploadsPath = path.join(process.cwd(), 'uploads');
-  //   const roomFolderPath = path.join(uploadsPath, roomId as string);
-  //   // 이미지 폴더가 존재하는지 확인
-  //   if (fs.existsSync(roomFolderPath)) {
-  //     fs.rmdirSync(roomFolderPath, { recursive: true });
-  //   }
-
-  //   await client
-  //     .db()
-  //     .collection('chats')
-  //     .deleteOne({ _id: new ObjectId(roomId as string) });
-
-  //   res.socket.server.io.emit('removeRoom', roomId);
-  // }
+  res.socket.server.io.to(roomId!).emit('joinleaveMessage', {
+    _id: chats_result.insertedId,
+    createdAt: now_time,
+    SenderId: '[system]',
+    content: `${session.user!.email}님이 퇴장하셨습니다.`,
+  });
 
   res.status(200).json({ message: 'success' });
 }

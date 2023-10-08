@@ -4,7 +4,22 @@ import { chatDataWithHmsType } from './chatList';
 import classes from './Chat.module.css';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useRouter } from 'next/router';
+
+async function kickUser(userId: string, chatId: string): Promise<string> {
+  const res = await fetch(`/api/kick/${userId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      chatId,
+    }),
+  }).then((res) => res.json());
+
+  return res;
+}
 
 function Chat({
   index,
@@ -13,17 +28,26 @@ function Chat({
   index: string;
   chatData: chatDataWithHmsType;
 }) {
+  const router = useRouter();
   const { data: session } = useSession();
-  const [selectedChatProfile, setSelectedChatProfile] =
-    useState<boolean>(false);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
-  const handleChatProfileClick = useCallback(
-    (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
-      e.stopPropagation();
-      setSelectedChatProfile((prev) => !prev);
-    },
-    []
+  const showTooltip = !(
+    chatData.SenderId === session?.user?.email ||
+    chatData.SenderId === '[system]'
   );
+
+  const queryClient = useQueryClient();
+  const { mutate: mutateKick } = useMutation<
+    unknown,
+    unknown,
+    { userId: string; chatId: string },
+    unknown
+  >(({ userId, chatId }) => kickUser(userId, chatId), {
+    onSuccess: () => {
+      // Invalidate and refetch?????
+    },
+  });
 
   return (
     <div
@@ -33,20 +57,49 @@ function Chat({
       key={`${index}`}
     >
       <div className={classes.chatProfile}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <Image
-          src={
-            chatData.SenderId === '[system]'
-              ? '/assets/system.png'
-              : `/api/chatProfile/${chatData.SenderId}?${Math.random()}`
-          }
-          alt="Profile Image"
-          width={30}
-          height={30}
-          loading="lazy"
-        />
+        <div
+          className={classes.profileImageContainer}
+          onMouseEnter={() => setIsTooltipVisible(true)}
+          onMouseLeave={() => setIsTooltipVisible(false)}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <Image
+            src={
+              chatData.SenderId === '[system]'
+                ? '/assets/system.png'
+                : `/api/chatProfile/${chatData.SenderId}?${Math.random()}`
+            }
+            alt="Profile Image"
+            width={30}
+            height={30}
+            loading="lazy"
+          />
+          {isTooltipVisible && showTooltip && (
+            <div className={classes.tooltip}>
+              <div
+                className={`${classes.tooltipContent} ${
+                  chatData.SenderId !== session?.user?.email
+                    ? classes.otherUser
+                    : ''
+                }`}
+              >
+                <div
+                  className={classes.kick}
+                  onClick={() => {
+                    mutateKick({
+                      userId: chatData.SenderId,
+                      chatId: chatData.chatId,
+                    });
+                  }}
+                >
+                  강퇴하기
+                </div>
+                <div className={classes.mute}>채팅금지</div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-      {/* <div> chatMenu</div> */}
       <div
         className={`${classes.chatMain} ${
           chatData.SenderId !== session?.user?.email ? classes.otherUser : ''

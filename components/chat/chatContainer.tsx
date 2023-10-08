@@ -14,6 +14,7 @@ export interface chatDataType {
   createdAt: string;
   SenderId: string;
   content: string;
+  chatId: string;
 }
 
 export interface roomDataType {
@@ -209,11 +210,11 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
 
   useEffect(() => {
     socket?.on('message', onMessage);
-    socket?.on('join', onJoin);
+    socket?.on('joinleaveMessage', onJoin);
     socket?.on('profileImage', onProfileImage);
     return () => {
       socket?.off('message', onMessage);
-      socket?.off('join', onJoin);
+      socket?.off('joinleaveMessage', onJoin);
       socket?.off('profileImage', onProfileImage);
     };
   }, [onJoin, onMessage, onProfileImage, socket]);

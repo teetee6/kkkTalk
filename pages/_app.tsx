@@ -6,6 +6,13 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 const queryClient = new QueryClient();
 
+async function initServerSocket() {
+  await fetch(
+    process.env.NEXT_PUBLIC_API_URL + process.env.NEXT_PUBLIC_SOCKET_URL!
+  );
+}
+initServerSocket();
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider session={pageProps.session}>

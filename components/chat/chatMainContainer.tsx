@@ -3,8 +3,7 @@ import ChatListContainer from './chatContainer';
 import ChatRoom from './chatRoom';
 import { useRouter } from 'next/router';
 import useSocket from '@/hooks/useSocket';
-import { useCallback, useEffect, useState } from 'react';
-import { Modal } from '../modal/modal';
+import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 
 function ChatMainContainer() {

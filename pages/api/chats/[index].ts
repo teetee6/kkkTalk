@@ -27,6 +27,7 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
         createdAt: now_time,
         SenderId: session.user!.email,
         content: req.body.chat,
+        chatId: req.query.index,
       });
 
       res.socket.server.io.to(`${req.query.index}`).emit('message', {
@@ -34,6 +35,7 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
         createdAt: now_time,
         SenderId: session.user!.email,
         content: req.body.chat,
+        chatId: req.query.index,
       });
       res.status(200).json({ message: 'OK' });
     } catch (error) {

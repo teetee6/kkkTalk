@@ -4,7 +4,6 @@ import { useSession, signOut } from 'next-auth/react';
 import classes from './mainNavigation.module.css';
 import { useState } from 'react';
 import Profile from '../profile/profile';
-import { useQuery } from 'react-query';
 
 function MainNavigation() {
   const { data, status } = useSession();

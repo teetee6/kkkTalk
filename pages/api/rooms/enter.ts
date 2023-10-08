@@ -53,13 +53,15 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
           createdAt: now_time,
           SenderId: '[system]',
           content: `${session.user!.email}님이 입장하셨습니다.`,
+          chatId: req.body.roomId,
         });
 
-        res.socket.server.io.to(req.body.roomId).emit('join', {
+        res.socket.server.io.to(req.body.roomId).emit('joinleaveMessage', {
           _id: chats_result.insertedId,
           createdAt: now_time,
           SenderId: '[system]',
           content: `${session.user!.email}님이 입장하셨습니다.`,
+          chatId: req.body.roomId,
         });
 
         res
