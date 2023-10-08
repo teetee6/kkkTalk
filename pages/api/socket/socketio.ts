@@ -36,6 +36,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
         socket.join(roomId);
       });
 
+      socket.on('leaveRoom', async (roomId, email) => {
+        socket.leave(roomId);
+      });
+
       socket.on('message', (roomId, message) => {
         io.to(roomId).emit('message', message);
       });

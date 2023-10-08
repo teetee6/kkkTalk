@@ -10,7 +10,6 @@ import { useSession } from 'next-auth/react';
 function ChatMainContainer() {
   const router = useRouter();
   const session = useSession();
-  const [showDeleteRoomModal, setShowDeleteRoomModal] = useState(false);
   const [chat_socket, disconnect_chat_socket] = useSocket(
     '/api/socket/socketio'
   );
@@ -20,12 +19,6 @@ function ChatMainContainer() {
       disconnect_chat_socket();
     };
   }, [disconnect_chat_socket]);
-
-  const onCloseDeleteRoomModal = useCallback(() => {
-    setShowDeleteRoomModal(
-      (prevShowDeleteRoomModal) => !prevShowDeleteRoomModal
-    );
-  }, []);
 
   return (
     <div className={classes.body}>
@@ -40,18 +33,8 @@ function ChatMainContainer() {
           )}
       </div>
       <div className={classes.rightSide}>
-        {session?.data?.user?.email && (
-          <ChatRoom
-            socket={chat_socket}
-            setShowDeleteRoomModal={setShowDeleteRoomModal}
-          />
-        )}
+        {session?.data?.user?.email && <ChatRoom socket={chat_socket} />}
       </div>
-      <Modal show={showDeleteRoomModal} onCloseModal={onCloseDeleteRoomModal}>
-        <div className="deleteRoomModalContainer">
-          <div className="deleteRoomModal">방이 폭파되었습니다</div>
-        </div>
-      </Modal>
     </div>
   );
 }

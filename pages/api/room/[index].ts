@@ -16,6 +16,7 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
   }
 
   const client = await connectToDatabase();
+  // 방 정보 가져오기
   if (req.method === 'GET') {
     try {
       const chatsCollection = client.db().collection('chats');
@@ -34,6 +35,7 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
       console.error('Error fetching chat messages:', error);
       res.status(500).json({ message: 'Failed to fetch chat messages' });
     }
+    // 방 삭제
   } else if (req.method === 'DELETE') {
     try {
       const chatsCollection = client.db().collection('chats');
@@ -73,6 +75,11 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
       if (fs.existsSync(roomFolderPath)) {
         fs.rmdirSync(roomFolderPath, { recursive: true });
       }
+
+      await client
+        .db()
+        .collection('chats')
+        .deleteOne({ _id: new ObjectId(req.query.index as string) });
 
       res.status(200).json({ message: 'OK' });
     } catch (error) {

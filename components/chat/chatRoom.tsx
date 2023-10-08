@@ -35,13 +35,7 @@ const fetchPaginatedData = async (page: number, pageSize: number) => {
   return data;
 };
 
-function ChatRoom({
-  socket,
-  setShowDeleteRoomModal,
-}: {
-  socket: Socket | undefined;
-  setShowDeleteRoomModal: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+function ChatRoom({ socket }: { socket: Socket | undefined }) {
   const router = useRouter();
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
   const [title, setTitle] = useState('');
@@ -164,12 +158,9 @@ function ChatRoom({
         return new_rooms;
       });
       queryClient.invalidateQueries(['roomlist']);
-      setShowDeleteRoomModal(
-        (prevShowDeleteRoomModal) => !prevShowDeleteRoomModal
-      );
       router.replace('/chat/-1');
     },
-    [queryClient, roomDatas, router, setShowDeleteRoomModal]
+    [queryClient, roomDatas, router]
   );
 
   useEffect(() => {

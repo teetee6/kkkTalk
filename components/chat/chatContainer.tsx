@@ -40,6 +40,17 @@ async function postChat(roomId: string, data: string): Promise<string> {
   return res;
 }
 
+async function exitRoom(roomId: string): Promise<string> {
+  const res = await fetch(`/api/roomExit/${roomId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((res) => res.json());
+
+  return res;
+}
+
 function ChatContainer({ socket }: { socket: Socket | undefined }) {
   const router = useRouter();
   const { slug } = router.query;
@@ -96,6 +107,15 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
       queryClient.invalidateQueries(['chat', roomId]);
     },
   });
+
+  const { mutate: mutateRoom } = useMutation<unknown, unknown, {}, unknown>(
+    ({}) => exitRoom(roomId!),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['room', roomId]);
+      },
+    }
+  );
 
   const onSubmitChat = useCallback(
     (e: React.FormEvent<HTMLDivElement>) => {
@@ -276,6 +296,17 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
             }}
           >
             방 목록으로
+          </div>
+          <div
+            className={classes.exitButton}
+            onClick={() => {
+              //방 나가기
+              mutateRoom({});
+              socket?.emit('leaveRoom', roomId, session?.data?.user?.email);
+              router.replace('/chat/-1');
+            }}
+          >
+            방 나가기
           </div>
         </div>
       </div>
