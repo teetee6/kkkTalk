@@ -22,6 +22,7 @@ export interface roomDataType {
   title: string;
   owner: string;
   memberList: string[];
+  kickList: string[];
 }
 
 export interface userDataType {
@@ -164,6 +165,12 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
     queryClient.invalidateQueries(['chat', roomId]);
   }, [queryClient, roomId]);
 
+  const onKicked = useCallback(() => {
+    queryClient.invalidateQueries(['room', roomId]);
+    console.log('kicked');
+    router.replace('/chat/kicked');
+  }, [queryClient, roomId, router]);
+
   const onMessage = useCallback(
     async (newChatData: chatDataType) => {
       queryClient.setQueryData(['chat', roomId], (chatData: any) => {
@@ -212,10 +219,12 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
     socket?.on('message', onMessage);
     socket?.on('joinleaveMessage', onJoin);
     socket?.on('profileImage', onProfileImage);
+    socket?.on('kicked', onKicked);
     return () => {
       socket?.off('message', onMessage);
       socket?.off('joinleaveMessage', onJoin);
       socket?.off('profileImage', onProfileImage);
+      socket?.off('kicked', onKicked);
     };
   }, [onJoin, onMessage, onProfileImage, socket]);
 

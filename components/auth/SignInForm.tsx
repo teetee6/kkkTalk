@@ -32,20 +32,13 @@ function SignInForm() {
 
     if (!result!.error) {
       chat_socket?.emit('login', email);
-      router.replace('/chat/-1');
+      router.push('/chat/-1');
     } else {
-      console.log(result!.error);
       toast.error(result!.error, {
         closeOnClick: true,
       });
     }
   }, [email, password, router, chat_socket]);
-
-  useEffect(() => {
-    return () => {
-      disconnect_chat_socket();
-    };
-  }, [disconnect_chat_socket]);
 
   return (
     <div className={classes.signin_container}>

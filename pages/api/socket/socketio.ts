@@ -2,14 +2,13 @@ import { NextApiRequest } from 'next';
 import { NextApiResponseServerIO } from '@/types/chat';
 import { Server as ServerIO } from 'socket.io';
 import { Server as NetServer } from 'http';
+import { socketMap } from '@/utils/socketMap';
 
 export const config = {
   api: {
     bodyParser: false,
   },
 };
-
-export const socketMap: { [key: string]: string } = {};
 
 const handler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
   if (!res.socket.server.io) {
@@ -26,8 +25,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
 
     io.on('connection', (socket) => {
       socket.on('login', async (email) => {
-        socketMap[email] = socket.id;
-        console.log('socketMap', socketMap);
+        socketMap[socket.id] = email;
+        console.log('-->[login]socketMap', socketMap);
       });
 
       socket.on('joinRoom', async (roomId, email) => {
@@ -43,8 +42,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
       });
 
       socket.on('disconnect', () => {
-        console.log('socketMap', socketMap);
         delete socketMap[socket.id];
+        console.log('-->[disconnect]socketMap', socketMap);
       });
     });
 

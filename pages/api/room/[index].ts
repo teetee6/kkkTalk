@@ -20,16 +20,21 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
   if (req.method === 'GET') {
     try {
       const chatsCollection = client.db().collection('chats');
-      const chats = await chatsCollection
-        .find({
-          _id: new ObjectId(req.query.index as string),
-        })
-        .toArray();
+      const chats = await chatsCollection.findOne({
+        _id: new ObjectId(req.query.index as string),
+      });
+
+      const roomsCollection = client.db().collection('rooms');
+      const rooms = await roomsCollection.findOne({
+        chatId: new ObjectId(req.query.index as string),
+      });
 
       res.status(200).json({
-        _id: chats[0]._id,
-        title: chats[0].title,
-        owner: chats[0].SenderId,
+        _id: chats?._id,
+        title: chats?.title,
+        owner: chats?.SenderId,
+        memberList: rooms?.memberList,
+        kickList: rooms?.kickList,
       });
     } catch (error) {
       console.error('Error fetching chat messages:', error);

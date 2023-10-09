@@ -13,11 +13,11 @@ function ChatMainContainer() {
     '/api/socket/socketio'
   );
 
-  useEffect(() => {
-    return () => {
-      disconnect_chat_socket();
-    };
-  }, [disconnect_chat_socket]);
+  // useEffect(() => {
+  //   return () => {
+  //     disconnect_chat_socket();
+  //   };
+  // }, [disconnect_chat_socket]);
 
   return (
     <div className={classes.body}>
