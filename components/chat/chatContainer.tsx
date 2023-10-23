@@ -8,7 +8,6 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { useSession } from 'next-auth/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import _ from 'lodash';
 
 export interface chatDataType {
   _id: string;
@@ -85,10 +84,6 @@ function ChatContainer({
     return res;
   });
 
-  const throttledRefetch = _.throttle(() => {
-    refetchChatList();
-  }, 50);
-
   const {
     data: chatDatas,
     isLoading: isLoadingChats,
@@ -108,12 +103,9 @@ function ChatContainer({
           throw error;
         }
         return res;
-      } else {
-        throttledRefetch();
       }
     },
-
-    { initialData: [] }
+    { enabled: !!roomDatas }
   );
 
   const queryClient = useQueryClient();
