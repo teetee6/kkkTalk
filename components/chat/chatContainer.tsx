@@ -284,7 +284,7 @@ function ChatContainer({
   if (!roomDatas || !chatDatas) return <div>로딩중...</div>;
   if (isLoadingRoom || isLoadingChats) return <div>로딩중...</div>;
 
-  if (isErrorRoom) return <div>{errorRoom}</div>;
+  // if (isErrorRoom) return <div>{errorRoom}</div>;
 
   return (
     <div className={classes.container} onDrop={onDrop} onDragOver={onDragOver}>
