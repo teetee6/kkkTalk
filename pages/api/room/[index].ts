@@ -29,6 +29,11 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
         chatId: new ObjectId(req.query.index as string),
       });
 
+      // if (rooms?.kickList.includes(session.user!.email)) {
+      //   console.log('kicked');
+      //   throw new Error('kicked');
+      // }
+
       res.status(200).json({
         _id: chats?._id,
         title: chats?.title,
@@ -37,8 +42,9 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
         kickList: rooms?.kickList,
       });
     } catch (error) {
-      console.error('Error fetching chat messages:', error);
-      res.status(500).json({ message: 'Failed to fetch chat messages' });
+      res
+        .status(403)
+        .json({ message: error || `Failed to fetch chat messages` });
     }
     // 방 삭제
   } else if (req.method === 'DELETE') {

@@ -8,6 +8,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { useSession } from 'next-auth/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import _ from 'lodash';
 
 export interface chatDataType {
   _id: string;
@@ -53,7 +54,13 @@ async function exitRoom(roomId: string): Promise<string> {
   return res;
 }
 
-function ChatContainer({ socket }: { socket: Socket | undefined }) {
+function ChatContainer({
+  socket,
+  setShowKickedModal,
+}: {
+  socket: Socket | undefined;
+  setShowKickedModal: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const router = useRouter();
   const { slug } = router.query;
   const roomId = slug === undefined ? undefined : slug[0];
@@ -61,6 +68,26 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
   const scrollbarRef = useRef<Scrollbars>(null);
   const session = useSession();
   const [dragOver, setDragOver] = useState(false);
+
+  const {
+    data: roomDatas,
+    isLoading: isLoadingRoom,
+    isError: isErrorRoom,
+    error: errorRoom,
+  } = useQuery<roomDataType>(['room', roomId], async () => {
+    const response = await fetch(`/api/room/${roomId}`);
+    const res = await response.json();
+    if (!response.ok) {
+      const error = new Error('not ok!');
+      error.message = res.message;
+      throw error;
+    }
+    return res;
+  });
+
+  const throttledRefetch = _.throttle(() => {
+    refetchChatList();
+  }, 50);
 
   const {
     data: chatDatas,
@@ -72,30 +99,21 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
   } = useQuery<chatDataType[]>(
     ['chat', roomId],
     async () => {
-      const response = await fetch(`/api/chats/${roomId}`);
-      const res = await response.json();
-      if (!response.ok) {
-        const error = new Error('not ok!');
-        error.message = res.message;
-        throw error;
+      if (roomDatas && !isLoadingRoom) {
+        const response = await fetch(`/api/chats/${roomId}`);
+        const res = await response.json();
+        if (!response.ok) {
+          const error = new Error('not ok!');
+          error.message = res.message;
+          throw error;
+        }
+        return res;
+      } else {
+        throttledRefetch();
       }
-      return res;
     },
-    { initialData: [] }
-  );
 
-  const { data: roomDatas, isLoading: isLoadingRoom } = useQuery<roomDataType>(
-    ['room', roomId],
-    async () => {
-      const response = await fetch(`/api/room/${roomId}`);
-      const res = await response.json();
-      if (!response.ok) {
-        const error = new Error('not ok!');
-        error.message = res.message;
-        throw error;
-      }
-      return res;
-    }
+    { initialData: [] }
   );
 
   const queryClient = useQueryClient();
@@ -167,9 +185,10 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
 
   const onKicked = useCallback(() => {
     queryClient.invalidateQueries(['room', roomId]);
-    console.log('kicked');
-    router.replace('/chat/kicked');
-  }, [queryClient, roomId, router]);
+    // console.log('kicked');
+    router.replace('/chat/-1');
+    setShowKickedModal((prev) => !prev);
+  }, [queryClient, roomId, router, setShowKickedModal]);
 
   const onMessage = useCallback(
     async (newChatData: chatDataType) => {
@@ -226,7 +245,7 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
       socket?.off('profileImage', onProfileImage);
       socket?.off('kicked', onKicked);
     };
-  }, [onJoin, onMessage, onProfileImage, socket]);
+  }, [onJoin, onMessage, onProfileImage, onKicked, socket]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -272,6 +291,8 @@ function ChatContainer({ socket }: { socket: Socket | undefined }) {
 
   if (!roomDatas || !chatDatas) return <div>로딩중...</div>;
   if (isLoadingRoom || isLoadingChats) return <div>로딩중...</div>;
+
+  if (isErrorRoom) return <div>{errorRoom}</div>;
 
   return (
     <div className={classes.container} onDrop={onDrop} onDragOver={onDragOver}>

@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]';
 import { NextApiResponseServerIO } from '@/types/chat';
-import { socketMap } from '@/utils/socketMap';
 
 async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
   // 방 목록 가져오기
@@ -13,8 +12,6 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
       res.status(401).json({ message: 'Not authenticated!' });
       return;
     }
-
-    console.log(socketMap);
 
     const client = await connectToDatabase();
     try {

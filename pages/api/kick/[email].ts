@@ -4,7 +4,20 @@ import { authOptions } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth';
 import { connectToDatabase } from '@/lib/db';
 import { ObjectId } from 'mongodb';
-import { socketMap } from '@/utils/socketMap';
+import Redis from 'ioredis';
+
+const redis = new Redis();
+
+async function getSocketIdByEmail(email: string) {
+  const keys = await redis.keys('*');
+  for (const key of keys) {
+    const value = await redis.get(key);
+    if (value === email) {
+      return key;
+    }
+  }
+  return null;
+}
 
 async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
   const session = await getServerSession(req, res, authOptions);
@@ -48,8 +61,17 @@ async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
   }
 
   // 해당 유저 kick하기
-  console.log('--->', socketMap[kickedEmail]);
-  res.socket.server.io.to(socketMap[kickedEmail]).emit('kicked');
+  // socketMap에서 해당 유저의 socketId를 찾아서 kick 이벤트 보내기
+
+  // if (kicked_socketId) {
+  //   console.log('kicked_socketId', kicked_socketId);
+  //   res.socket.server.io.to(kicked_socketId).emit('kicked');
+  // }
+
+  const kicked_socketId = await getSocketIdByEmail(kickedEmail);
+  if (kicked_socketId) {
+    res.socket.server.io.to(kicked_socketId).emit('kicked');
+  }
 
   res.status(200).json({ message: 'success' });
 }
