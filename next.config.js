@@ -11,6 +11,18 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    if (process.env.NODE_ENV === 'production') {
+      return [
+        {
+          source: '/www/:path*',
+          destination: `https://kkkkkktalk.com/:path*`,
+          permanent: true,
+        },
+      ];
+    }
+    return [];
+  },
 };
 
 module.exports = nextConfig;
