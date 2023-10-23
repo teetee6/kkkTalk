@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, FormEvent } from 'react';
 import useValidation from '../../hooks/useValidation';
 import { useRouter } from 'next/router';
 import classes from './SignIn.module.css';
@@ -23,25 +23,30 @@ function SignInForm() {
     handleValidation,
   ] = useValidation(setEmail, setPassword);
 
-  const handleSignIn = useCallback(async () => {
-    const result = await signIn('credentials', {
-      redirect: false,
-      email: email,
-      password: password,
-    });
+  const handleSignIn = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
 
-    if (!result!.error) {
-      chat_socket?.emit('login', email);
-      router.push('/chat/-1');
-    } else {
-      toast.error(result!.error, {
-        closeOnClick: true,
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: email,
+        password: password,
       });
-    }
-  }, [email, password, router, chat_socket]);
+
+      if (!result!.error) {
+        chat_socket?.emit('login', email);
+        router.push('/chat/-1');
+      } else {
+        toast.error(result!.error, {
+          closeOnClick: true,
+        });
+      }
+    },
+    [email, password, router, chat_socket]
+  );
 
   return (
-    <div className={classes.signin_container}>
+    <form onSubmit={handleSignIn} className={classes.signin_container}>
       <ToastContainer limit={1} />
       <h2>로그인</h2>
       <div className={classes.input_container}>
@@ -67,18 +72,19 @@ function SignInForm() {
       <button
         className={classes.login_button}
         data-testid="signin-button"
-        onClick={handleSignIn}
+        type="submit"
         disabled={!handleValidation()}
       >
         로그인
       </button>
       <button
+        type="button"
         className={classes.signup_button}
         onClick={() => router.replace('/signUp')}
       >
         회원가입하러 가기
       </button>
-    </div>
+    </form>
   );
 }
 

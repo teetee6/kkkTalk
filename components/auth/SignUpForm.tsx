@@ -1,5 +1,5 @@
 import useValidation from '@/hooks/useValidation';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import classes from './SignUp.module.css';
 import { toast, ToastContainer } from 'react-toastify';
@@ -18,42 +18,47 @@ function SignUpForm() {
     handleValidation,
   ] = useValidation(setEmail, setPassword);
 
-  const handleSignUp = useCallback(async () => {
-    if (handleValidation()) {
-      try {
-        const response = await fetch('/api/auth/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        });
+  const handleSignUp = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
 
-        if (response.status === 201) {
-          toast.success('회원가입에 성공하였습니다.', {
-            onClick() {
-              router.replace('/signIn');
+      if (handleValidation()) {
+        try {
+          const response = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
             },
-            closeOnClick: true,
+            body: JSON.stringify({
+              email,
+              password,
+            }),
           });
-        } else {
-          response.json().then((data) => {
-            toast.error(data.message, {
+
+          if (response.status === 201) {
+            toast.success('회원가입에 성공하였습니다.', {
+              onClick() {
+                router.replace('/signIn');
+              },
               closeOnClick: true,
             });
-          });
+          } else {
+            response.json().then((data) => {
+              toast.error(data.message, {
+                closeOnClick: true,
+              });
+            });
+          }
+        } catch (error) {
+          console.error('Error during signup:', error);
         }
-      } catch (error) {
-        console.error('Error during signup:', error);
       }
-    }
-  }, [handleValidation, email, password, router]);
+    },
+    [handleValidation, email, password, router]
+  );
 
   return (
-    <div className={classes.signup_container}>
+    <form onSubmit={handleSignUp} className={classes.signup_container}>
       <ToastContainer limit={1} />
       <h2>회원가입</h2>
       <div className={classes.input_container}>
@@ -79,18 +84,19 @@ function SignUpForm() {
       <button
         className={classes.signup_button}
         data-testid="signup-button"
-        onClick={handleSignUp}
+        type="submit"
         disabled={!handleValidation()}
       >
         회원가입
       </button>
       <button
+        type="button"
         className={classes.login_link}
         onClick={() => router.replace('/signIn')}
       >
         로그인하러 가기
       </button>
-    </div>
+    </form>
   );
 }
 
